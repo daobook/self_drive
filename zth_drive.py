@@ -19,7 +19,7 @@ import tensorflow as tf
 # 找到最大的可能性
 def get_max_prob_num(predictions_array):
     prediction_edit = np.zeros([1, 5])
-    for i in range(0, 5):
+    for i in range(5):
         if predictions_array[0][i] == predictions_array.max():
             prediction_edit[0][i] = 1
             return i
@@ -90,17 +90,14 @@ class ProcessOutput(object):
     def __init__(self):
         self.done = False
         self.lock = threading.Lock()
-        self.pool = [ImageProcessor(self) for i in range(4)]
+        self.pool = [ImageProcessor(self) for _ in range(4)]
         self.processor = None
     def write(self, buf):
         if buf.startswith(b'\xff\xd8'):
             if self.processor:
                 self.processor.event.set()
             with self.lock:
-                if self.pool:
-                    self.processor = self.pool.pop()
-                else:
-                    self.processor = None
+                self.processor = self.pool.pop() if self.pool else None
         if self.processor:
             self.processor.stream.write(buf)
 

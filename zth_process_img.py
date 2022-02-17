@@ -47,7 +47,7 @@ if __name__ == '__main__':
     print("number of files: {}".format(len(files)))
     print("turns: {}".format(turns))
 
-    for turn in range(0, turns):
+    for turn in range(turns):
         train_labels = np.zeros((1, 5), 'float')           # 初始化标签数组
         train_imgs = np.zeros([1, 120, 160, 3])            # 初始化图像数组
 
@@ -55,10 +55,10 @@ if __name__ == '__main__':
         print("number of CHUNK files: {}".format(len(CHUNK_files)))
         for file in CHUNK_files:
             # 不是文件夹，并且是jpg文件
-            if not os.path.isdir(file) and file[len(file) - 3:len(file)] == 'jpg':
+            if not os.path.isdir(file) and file[len(file) - 3 :] == 'jpg':
                 try:
                     key = int(file[0])                     # 取第一个字符为key
-                    image_array, label_array = process_img(path + "/" + file, key)
+                    image_array, label_array = process_img(f'{path}/{file}', key)
                     train_imgs = np.vstack((train_imgs, image_array))
                     train_labels = np.vstack((train_labels, label_array))
                 except:
@@ -73,7 +73,12 @@ if __name__ == '__main__':
         if not os.path.exists(directory):
             os.makedirs(directory)
         try:
-            np.savez(directory + '/' + file_name + '.npz', train_imgs=train_imgs, train_labels=train_labels)
+            np.savez(
+                f'{directory}/{file_name}.npz',
+                train_imgs=train_imgs,
+                train_labels=train_labels,
+            )
+
         except IOError as e:
             print(e)
 

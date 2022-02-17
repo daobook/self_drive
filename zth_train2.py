@@ -33,11 +33,7 @@ def get_tuned_variables():
     variables_to_restore = []
     # 枚举inception-v3模型中所有的参数，然后判断是否需要从加载列表中移除。
     for var in slim.get_model_variables():
-        excluded = False
-        for exclusion in exclusions:
-            if var.op.name.startswith(exclusion):
-                excluded = True
-                break
+        excluded = any(var.op.name.startswith(exclusion) for exclusion in exclusions)
         if not excluded:
             variables_to_restore.append(var)
     return variables_to_restore
@@ -124,8 +120,7 @@ def main():
             if start == n_training_example:
                 start = 0
             end = start + BATCH
-            if end > n_training_example:
-                end = n_training_example
+            end = min(end, n_training_example)
         # 在最后的测试数据上测试正确率。
         test_accuracy = sess.run(evaluation_step, feed_dict={
             images: testing_images, labels: testing_labels})

@@ -44,15 +44,13 @@ def create_image_lists(sess, testing_percentage, validation_percentage):
         file_list = []
         dir_name = os.path.basename(sub_dir)
         for extension in extensions:
-            file_glob = os.path.join(INPUT_DATA, dir_name, '*.' + extension)
+            file_glob = os.path.join(INPUT_DATA, dir_name, f'*.{extension}')
             file_list.extend(glob.glob(file_glob))
         if not file_list: continue
         print("processing:", dir_name)
 
-        i = 0
         # 处理图片数据。
-        for file_name in file_list:
-            i += 1
+        for i, file_name in enumerate(file_list, start=1):
             # 读取并解析图片，将图片转化为299*299以方便inception-v3模型来处理。
             image_raw_data = gfile.FastGFile(file_name, 'rb').read()
             image = tf.image.decode_jpeg(image_raw_data)

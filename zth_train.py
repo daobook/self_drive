@@ -42,7 +42,7 @@ def load_data():
     for single_npz in training_data:
         with np.load(single_npz) as data:
             print(data.keys())
-            i = i + 1
+            i += 1
             print("在打印关键值", i)
             train_temp = data['train_imgs']
             train_labels_temp = data['train_labels']
@@ -52,8 +52,8 @@ def load_data():
     print("循环完了")
     X = image_array[1:, :]
     y = label_array[1:, :]
-    print('Image array shape: ' + str(X.shape))
-    print('Label array shape: ' + str(y.shape))
+    print(f'Image array shape: {str(X.shape)}')
+    print(f'Label array shape: {str(y.shape)}')
     print(np.mean(X))
     print(np.var(X))
 
